@@ -843,8 +843,8 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Atividade de IA 2025.2
-  metroPackageVersion: 
+  metroPackageName: AtividadedeIA2025.2
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -852,7 +852,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Atividade de IA 2025.2
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Atividade de IA 2025.2
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
