@@ -103,13 +103,13 @@ public class PlayerAnimationController : MonoBehaviour
         moveInput = new Vector2(x, z).normalized;
         
         // Correr (Shift)
-        runInput = Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed;
+        runInput = Keyboard.current.leftShiftKey.isPressed;
         
         // Pulo (Space)
         jumpInput = Keyboard.current.spaceKey.wasPressedThisFrame;
         
         // Ataque (Botão esquerdo do mouse ou E)
-        attackInput = Mouse.current.leftButton.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame;
+        attackInput = Mouse.current.leftButton.wasPressedThisFrame;
     }
     
     void HandleMovement()
@@ -260,6 +260,7 @@ public class PlayerAnimationController : MonoBehaviour
                 }
             }
         }
+        
     }
     
     // Chamado quando a animação de ataque termina
