@@ -4175,7 +4175,7 @@ Transform:
   m_GameObject: {fileID: 1350426050}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.11225356, z: 0, w: 0.99367964}
-  m_LocalPosition: {x: 0.108, y: 1.3446119, z: 0.342}
+  m_LocalPosition: {x: 0.061, y: 1.3446119, z: 0.873}
   m_LocalScale: {x: 0.4854369, y: 0.4854369, z: 0.4854369}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6818,6 +6818,7 @@ GameObject:
   - component: {fileID: 919132149560124323}
   - component: {fileID: 919132149560124326}
   - component: {fileID: 919132149560124325}
+  - component: {fileID: 919132149560124327}
   m_Layer: 8
   m_Name: Boss
   m_TagString: Boss
@@ -6864,7 +6865,7 @@ MonoBehaviour:
   attackCooldown: 2
   attackWindup: 0.5
   attackDuration: 1
-  attackRadius: 15
+  attackRadius: 10
   attackAngle: 90.8
   obstacleLayer:
     serializedVersion: 2
@@ -6904,10 +6905,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a82f989d66955d48a2ffa1d2c57a9ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossNavigation
-  patrolSpeed: 7
+  patrolSpeed: 8
   chaseSpeed: 9
   escapeSpeed: 10
-  attackStopDistance: 2
+  attackStopDistance: 5
   patrolRoute:
     waypoints:
     - {fileID: 573047987}
@@ -6920,6 +6921,21 @@ MonoBehaviour:
   jumpAnimationDuration: 1.5
   jumpPrepareTime: 0.5
   agent: {fileID: 0}
+--- !u!114 &919132149560124327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149560124322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5238a823e76a1042b98455d1653fe13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  targetRenderer: {fileID: 3103283877610566790}
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.1
 --- !u!1 &954356094021882531
 GameObject:
   m_ObjectHideFlags: 0
@@ -9319,6 +9335,7 @@ GameObject:
   - component: {fileID: 5290347145649084420}
   - component: {fileID: 5290347145649084421}
   - component: {fileID: 5290347145649084422}
+  - component: {fileID: 5290347145649084423}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -9589,7 +9606,7 @@ MonoBehaviour:
   walkSpeed: 7
   runSpeed: 15
   rotationSpeed: 10
-  jumpForce: 8
+  jumpForce: 5
   groundCheck: {fileID: 7392679065081358659}
   groundDistance: 0.3
   groundMask:
@@ -9646,6 +9663,21 @@ MonoBehaviour:
   takeDamageTriggerName: TakeDamage
   showDebugGizmos: 1
   attackConeColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &5290347145649084423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4765026244491870906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5238a823e76a1042b98455d1653fe13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  targetRenderer: {fileID: 4756571324508361265}
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.15
 --- !u!1 &5355455239729601099
 GameObject:
   m_ObjectHideFlags: 0
@@ -11628,6 +11660,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4288936878995674865}
   - component: {fileID: 6362874641453324241}
+  - component: {fileID: 8821101504529350802}
   m_Layer: 0
   m_Name: Maria_sword
   m_TagString: Untagged
@@ -11635,6 +11668,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &8821101504529350802
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8821101504529350801}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.37, y: 1.08, z: 1.3582829}
+  m_Center: {x: 0.039058805, y: 1.2664436, z: 0.7669753}
 --- !u!1 &8863972679986349272
 GameObject:
   m_ObjectHideFlags: 0
@@ -11708,6 +11762,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7392679065081358659}
+  - component: {fileID: 8948873023583477629}
   m_Layer: 0
   m_Name: mixamorig:RightToeBase
   m_TagString: Untagged
@@ -11715,6 +11770,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &8948873023583477629
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8948873023583477628}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2, y: 0.2, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8953972739973054583
 GameObject:
   m_ObjectHideFlags: 0

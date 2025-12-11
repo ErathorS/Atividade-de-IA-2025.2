@@ -15,6 +15,7 @@ public class PlayerHealth : MonoBehaviour
     public Color fullHealthColor = Color.green;
     public Color lowHealthColor = Color.red;
     public Image healthFillImage;
+    private DamageFlash flash;
     
     [Header("Death Settings")]
     public float respawnDelay = 5f;
@@ -26,7 +27,7 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         UpdateHealthBar();
-        
+        flash = GetComponent<DamageFlash>();
         if (healthFillImage != null)
         {
             healthFillImage.color = fullHealthColor;
@@ -50,6 +51,9 @@ public class PlayerHealth : MonoBehaviour
         float oldHealth = currentHealth;
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+      //para visual no personagem
+         if (flash != null)
+        flash.Flash();
 
         Debug.Log($"Player levou {damage} de dano! Vida: {oldHealth} -> {currentHealth}");
         
