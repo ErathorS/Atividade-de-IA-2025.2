@@ -13,6 +13,9 @@ public class BossCombat : MonoBehaviour
     public float attackRadius = 2.5f;
     public float attackAngle = 45f;
     
+    [Header("Obstacle Detection")]
+    public LayerMask obstacleLayer; 
+    
     [Header("Animation")]
     public string attackTriggerName = "Attacking";
     
@@ -26,14 +29,12 @@ public class BossCombat : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         
-        // Debug: Verifique se o parâmetro existe
         if (!HasParameter("Attacking", animator))
         {
             Debug.LogError("Parâmetro 'Attacking' não encontrado no Animator! Adicione um Trigger com esse nome.");
         }
     }
     
-    // Método para verificar se um parâmetro existe no Animator
     bool HasParameter(string paramName, Animator animator)
     {
         foreach (AnimatorControllerParameter param in animator.parameters)
@@ -67,27 +68,40 @@ public class BossCombat : MonoBehaviour
     {
         isAttacking = true;
         
-        // Windup (preparação)
         yield return new WaitForSeconds(attackWindup);
         
-        // Ativa o trigger da animação
         Debug.Log("Ativando trigger 'Attacking' no Animator");
         animator.SetTrigger(attackTriggerName);
         
-        // Marca o tempo do ataque
         lastAttackTime = Time.time;
         
-        // Aguarda a duração da animação
         yield return new WaitForSeconds(attackDuration);
         
         isAttacking = false;
     }
     
-    // MÉTODO QUE SERÁ CHAMADO PELO EVENTO NA ANIMAÇÃO
     public void AnimationEvent_ApplyDamage()
     {
         Debug.Log("Evento de animação: Aplicando dano!");
         ApplyAttackDamage();
+    }
+    
+    bool HasObstacleBetween(Transform target)
+    {
+        Vector3 start = transform.position + Vector3.up * 1f;
+        Vector3 end = target.position + Vector3.up * 0.5f;
+        
+        RaycastHit hit;
+        if (Physics.Linecast(start, end, out hit, obstacleLayer))
+        {
+            if (hit.transform != target)
+            {
+                Debug.Log($"Boss: Obstáculo detectado: {hit.transform.name}");
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     void ApplyAttackDamage()
@@ -106,14 +120,18 @@ public class BossCombat : MonoBehaviour
         
         if (distance <= attackRadius && angleToPlayer <= attackAngle * 0.5f)
         {
-            // Tenta usar o PlayerCombat primeiro
+            if (HasObstacleBetween(player))
+            {
+                Debug.Log("Ataque bloqueado por obstáculo!");
+                return;
+            }
+            
             PlayerCombat playerCombat = player.GetComponent<PlayerCombat>();
             if (playerCombat != null)
             {
                 playerCombat.TakeDamageFromEnemy(attackDamage, transform);
                 Debug.Log($"Boss causou {attackDamage} de dano ao player via PlayerCombat!");
             }
-            // Fallback para o PlayerHealth direto
             else
             {
                 PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
@@ -141,7 +159,6 @@ public class BossCombat : MonoBehaviour
     
     void OnDrawGizmosSelected()
     {
-        // Gizmo do cone de ataque
         Gizmos.color = Color.magenta;
         Vector3 leftAttack = Quaternion.Euler(0, -attackAngle / 2, 0) * transform.forward * attackRadius;
         Vector3 rightAttack = Quaternion.Euler(0, attackAngle / 2, 0) * transform.forward * attackRadius;
@@ -149,5 +166,13 @@ public class BossCombat : MonoBehaviour
         Gizmos.DrawRay(transform.position, leftAttack);
         Gizmos.DrawRay(transform.position, rightAttack);
         Gizmos.DrawLine(transform.position + leftAttack, transform.position + rightAttack);
+        
+        if (player != null)
+        {
+            Gizmos.color = Color.yellow;
+            Vector3 start = transform.position + Vector3.up * 1f;
+            Vector3 end = player.position + Vector3.up * 0.5f;
+            Gizmos.DrawLine(start, end);
+        }
     }
 }

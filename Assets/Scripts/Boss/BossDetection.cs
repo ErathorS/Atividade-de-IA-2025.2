@@ -31,16 +31,13 @@ public class BossDetection : MonoBehaviour
         
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         
-        // Verifica se o player está no alcance
         if (distanceToPlayer <= detectionRange)
         {
-            // Verifica se está no campo de visão
             Vector3 directionToPlayer = (player.position - transform.position).normalized;
             float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
             
             if (angleToPlayer <= fieldOfView * 0.5f)
             {
-                // Verifica se há obstáculos entre o boss e o player
                 if (!Physics.Linecast(transform.position, player.position, obstacleLayer))
                 {
                     detectionTimer += Time.deltaTime;
@@ -62,7 +59,6 @@ public class BossDetection : MonoBehaviour
             LostSight();
         }
         
-        // Verifica se está no alcance de ataque
         playerInAttackRange = distanceToPlayer <= attackRange;
     }
     
@@ -100,15 +96,12 @@ public class BossDetection : MonoBehaviour
     
     void OnDrawGizmosSelected()
     {
-        // Gizmo de alcance de detecção
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
         
-        // Gizmo de alcance de ataque
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
         
-        // Gizmo de campo de visão
         Gizmos.color = Color.cyan;
         Vector3 leftBoundary = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward * detectionRange;
         Vector3 rightBoundary = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward * detectionRange;

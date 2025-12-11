@@ -8,8 +8,8 @@ public class BossNavigationSystem : MonoBehaviour
     [System.Serializable]
     public class PatrolRoute
     {
-        public Transform[] waypoints; // Ordem: [0] Plataforma3, [1] Plataforma2, [2] Plataforma1, [3] PontoDePulo
-        public int jumpWaypointIndex = 3; // O último waypoint é o ponto de pulo
+        public Transform[] waypoints;
+        public int jumpWaypointIndex = 3; 
         public float waitTimeAtWaypoint = 2f;
     }
     
@@ -74,10 +74,7 @@ public class BossNavigationSystem : MonoBehaviour
             PatrolLogic();
         }
     }
-    
-    // ========================================
-    // PATRULHA COM CICLO CORRETO
-    // ========================================
+  
     public void StartPatrol()
     {
         isPatrolling = true;
@@ -87,7 +84,6 @@ public class BossNavigationSystem : MonoBehaviour
         agent.speed = patrolSpeed;
         agent.stoppingDistance = 0.5f;
         
-        // Começa do waypoint 0 (Plataforma 3)
         currentWaypointIndex = 0;
         
         if (patrolRoute != null && patrolRoute.waypoints.Length > 0)
@@ -103,7 +99,6 @@ public class BossNavigationSystem : MonoBehaviour
         {
             Debug.Log($"Chegou no waypoint {currentWaypointIndex} ({patrolRoute.waypoints[currentWaypointIndex].name})");
             
-            // Verifica se é o ponto de pulo
             if (currentWaypointIndex == patrolRoute.jumpWaypointIndex)
             {
                 TryToJump();
@@ -138,7 +133,6 @@ public class BossNavigationSystem : MonoBehaviour
     
     void MoveToNextWaypoint()
     {
-        // Lógica: 0→1→2→3(pulo)→0→1→2→3...
         int nextIndex = (currentWaypointIndex + 1) % patrolRoute.waypoints.Length;
         
         Debug.Log($"Saindo do waypoint {currentWaypointIndex}, indo para {nextIndex}");
@@ -164,7 +158,6 @@ public class BossNavigationSystem : MonoBehaviour
         if (Time.time < lastJumpTime + jumpCooldown)
         {
             Debug.Log("Pulo em cooldown, indo para próximo waypoint");
-            // Se não pode pular, vai direto para o próximo waypoint
             MoveToNextWaypoint();
             return;
         }
@@ -176,18 +169,15 @@ public class BossNavigationSystem : MonoBehaviour
     {
         isJumping = true;
         
-        // 1. Para completamente
         agent.isStopped = true;
         agent.ResetPath();
         
-        // 2. Preparação para pulo
         Debug.Log("Preparando para pular...");
         animator.SetBool("Walking", false);
         animator.SetBool("Jumping", true);
         
         yield return new WaitForSeconds(jumpPrepareTime);
         
-        // 3. Encontra o OffMeshLink mais próximo
         OffMeshLink jumpLink = FindNearestJumpLink();
         
         if (jumpLink != null && jumpLink.activated)
@@ -201,14 +191,12 @@ public class BossNavigationSystem : MonoBehaviour
             yield return StartCoroutine(ManualJump());
         }
         
-        // 4. Após o pulo, volta para o waypoint 0 (Plataforma 3)
         Debug.Log("Pulo concluído! Voltando para Plataforma 3 (waypoint 0)");
         
         animator.SetBool("Jumping", false);
         lastJumpTime = Time.time;
         
-        // IMPORTANTE: Após pular, volta para o waypoint 0
-        currentWaypointIndex = 0; // Reseta para começar do início
+        currentWaypointIndex = 0; 
         MoveToWaypoint(0);
         
         isJumping = false;
@@ -250,14 +238,12 @@ public class BossNavigationSystem : MonoBehaviour
         {
             float t = elapsedTime / traverseTime;
             
-            // Movimento com curva de pulo (parábola)
             Vector3 newPos = Vector3.Lerp(startPos, endPos, t);
-            float height = Mathf.Sin(t * Mathf.PI) * 2f; // Altura máxima no meio do pulo
+            float height = Mathf.Sin(t * Mathf.PI) * 2f;
             newPos.y += height;
             
             transform.position = newPos;
             
-            // Olha na direção do movimento
             if (t > 0.1f && t < 0.9f)
             {
                 Vector3 direction = (endPos - startPos).normalized;
@@ -271,7 +257,6 @@ public class BossNavigationSystem : MonoBehaviour
             yield return null;
         }
         
-        // Garante posição final exata
         transform.position = endPos;
         agent.Warp(endPos);
         
@@ -280,7 +265,6 @@ public class BossNavigationSystem : MonoBehaviour
     
     IEnumerator ManualJump()
     {
-        // Posição de destino após o pulo (waypoint 0 - Plataforma 3)
         Vector3 jumpTarget = patrolRoute.waypoints[0].position;
         Vector3 startPosition = transform.position;
         
@@ -293,9 +277,8 @@ public class BossNavigationSystem : MonoBehaviour
         {
             float t = elapsedTime / jumpTime;
             
-            // Curva de pulo suave
             Vector3 newPos = Vector3.Lerp(startPosition, jumpTarget, t);
-            float height = Mathf.Sin(t * Mathf.PI) * 3f; // Pulo mais alto
+            float height = Mathf.Sin(t * Mathf.PI) * 3f;
             newPos.y += height;
             
             transform.position = newPos;
@@ -307,10 +290,7 @@ public class BossNavigationSystem : MonoBehaviour
         transform.position = jumpTarget;
         agent.Warp(jumpTarget);
     }
-    
-    // ========================================
-    // MÉTODOS PARA OUTROS ESTADOS (mantidos)
-    // ========================================
+
     public void StartChasing(Transform player)
     {
         isChasing = true;
@@ -421,7 +401,6 @@ public class BossNavigationSystem : MonoBehaviour
         agent.stoppingDistance = distance;
     }
     
-    // Método para debug da rota
     public string GetCurrentRouteInfo()
     {
         string info = $"Rota: ";
@@ -453,25 +432,22 @@ public class BossNavigationSystem : MonoBehaviour
         {
             if (patrolRoute.waypoints[i] == null) continue;
             
-            // Cores diferentes para diferentes tipos de waypoints
             if (i == currentWaypointIndex)
             {
-                Gizmos.color = Color.green; // Waypoint atual
+                Gizmos.color = Color.green; 
             }
             else if (i == patrolRoute.jumpWaypointIndex)
             {
-                Gizmos.color = Color.yellow; // Ponto de pulo
+                Gizmos.color = Color.yellow; 
             }
             else
             {
-                Gizmos.color = Color.cyan; // Waypoints normais
+                Gizmos.color = Color.cyan; 
             }
             
-            // Desenha o waypoint
             float size = (i == currentWaypointIndex) ? 0.6f : 0.4f;
             Gizmos.DrawSphere(patrolRoute.waypoints[i].position, size);
             
-            // Desenha linha para o próximo waypoint
             int nextIndex = (i + 1) % patrolRoute.waypoints.Length;
             if (patrolRoute.waypoints[nextIndex] != null)
             {
@@ -482,7 +458,6 @@ public class BossNavigationSystem : MonoBehaviour
                 );
             }
             
-            // Rótulo
             #if UNITY_EDITOR
             string label = $"{i}: {patrolRoute.waypoints[i].name}";
             if (i == patrolRoute.jumpWaypointIndex) label += " (PULO)";

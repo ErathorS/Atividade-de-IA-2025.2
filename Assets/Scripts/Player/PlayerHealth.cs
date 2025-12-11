@@ -37,7 +37,6 @@ public class PlayerHealth : MonoBehaviour
     
     void Update()
     {
-        // Debug danificar
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             TakeDamage(50f);
@@ -81,27 +80,23 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         Debug.Log("PLAYER MORREU!");
         
-        // Ativa a animação de morte
         if (animator != null)
         {
             animator.SetBool("IsDead", true);
         }
         
-        // Desativa o controlador de animação
         PlayerAnimationController controller = GetComponent<PlayerAnimationController>();
         if (controller != null)
         {
             controller.enabled = false;
         }
         
-        // Desativa o script de combate, se existir
         PlayerCombat combat = GetComponent<PlayerCombat>();
         if (combat != null)
         {
             combat.enabled = false;
         }
         
-        // Desativa o movimento
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -115,7 +110,6 @@ public class PlayerHealth : MonoBehaviour
             characterController.enabled = false;
         }
         
-        // Inicia a rotina para resetar a cena após 5 segundos
         StartCoroutine(ResetSceneAfterDelay(respawnDelay));
     }
     
@@ -123,11 +117,9 @@ public class PlayerHealth : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         
-        // Recarrega a cena atual
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     
-    // Método opcional para curar o jogador
     public void Heal(float amount)
     {
         if (isDead) return;

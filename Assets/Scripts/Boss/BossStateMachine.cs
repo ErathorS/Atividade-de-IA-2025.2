@@ -28,13 +28,11 @@ public class BossStateMachine : MonoBehaviour
     [Header("Escape Settings")]
     public Transform[] safePoints;
     
-    // Componentes
     private BossNavigationSystem navigation;
     private BossDetection detection;
     private BossCombat combat;
     private Animator animator;
     
-    // Estado atual
     private BossState currentState;
     private BossState healthBasedState;
     private float escapeTimer = 0f;
@@ -42,43 +40,35 @@ public class BossStateMachine : MonoBehaviour
     
     void Start()
     {
-        // Inicializa componentes
         navigation = GetComponent<BossNavigationSystem>();
         detection = GetComponent<BossDetection>();
         combat = GetComponent<BossCombat>();
         animator = GetComponent<Animator>();
         
-        // Verifica componentes
         if (navigation == null) Debug.LogError("BossNavigationSystem não encontrado!");
         if (detection == null) Debug.LogError("BossDetection não encontrado!");
         if (combat == null) Debug.LogError("BossCombat não encontrado!");
         if (animator == null) Debug.LogError("Animator não encontrado!");
         
-        // Configuração inicial
         currentHealth = maxHealth;
         UpdateHealthBar();
         
-        // Estado inicial baseado na saúde
         healthBasedState = GetStateByHealth();
         ChangeState(BossState.PATROL);
     }
     
     void Update()
     {
-        // Atualiza barra de vida
         UpdateHealthBar();
         
-        // Executa lógica do estado atual
         ExecuteCurrentState();
         
-        // Verifica transições de saúde (exceto em estados temporários)
         if (!isInTransition && currentState != BossState.ESCAPE && 
             currentState != BossState.ATTACK && currentState != BossState.DEAD)
         {
             CheckHealthBasedTransitions();
         }
         
-        // Contador para estado de fuga
         if (currentState == BossState.ESCAPE)
         {
             escapeTimer -= Time.deltaTime;
@@ -113,12 +103,10 @@ public class BossStateMachine : MonoBehaviour
     
     void ExecutePatrol()
     {
-        // Se detectou jogador, muda para perseguição
         if (detection.IsPlayerDetected())
         {
             ChangeState(BossState.CHASE);
         }
-        // Se não há rota de patrulha configurada, fica parado
         else if (navigation != null && !navigation.IsPatrolling())
         {
             animator.SetBool("Walking", false);
@@ -128,21 +116,17 @@ public class BossStateMachine : MonoBehaviour
     
     void ExecuteChase()
     {
-        // Persegue o jogador
         if (detection.GetPlayer() != null)
         {
             navigation.StartChasing(detection.GetPlayer());
         }
         
-        // Verifica se pode atacar
         if (detection.IsPlayerInAttackRange() && combat.CanAttack())
         {
             ChangeState(BossState.ATTACK);
         }
-        // Se perdeu o jogador, volta a patrulhar
         else if (!detection.IsPlayerDetected())
         {
-            // Espera um pouco antes de voltar a patrulhar
             if (navigation.HasReachedDestination())
             {
                 StartCoroutine(ReturnToPatrolAfterDelay(2f));
@@ -162,15 +146,12 @@ public class BossStateMachine : MonoBehaviour
     
     void ExecuteAttack()
     {
-        // Para o movimento
         navigation.StopForAttack();
         
-        // Inicia ataque se não estiver atacando
         if (!combat.IsAttacking())
         {
             combat.StartAttack();
             
-            // Após atacar, decide o próximo estado
             StartCoroutine(AfterAttackSequence(combat.attackDuration + 0.5f));
         }
     }
@@ -185,18 +166,15 @@ public class BossStateMachine : MonoBehaviour
             {
                 if (detection.IsPlayerInAttackRange() && combat.CanAttack())
                 {
-                    // Continua atacando
                     ExecuteAttack();
                 }
                 else
                 {
-                    // Volta a perseguir
                     ChangeState(BossState.CHASE);
                 }
             }
             else
             {
-                // Volta a patrulhar
                 ChangeState(BossState.PATROL);
             }
         }
@@ -204,7 +182,6 @@ public class BossStateMachine : MonoBehaviour
     
     void ExecuteEscape()
     {
-        // Move para ponto seguro
         Transform safestPoint = GetSafestPoint();
         if (safestPoint != null)
         {
@@ -214,12 +191,10 @@ public class BossStateMachine : MonoBehaviour
     
     void ExecuteDead()
     {
-        // Desativa todos os sistemas
         navigation.enabled = false;
         detection.enabled = false;
         combat.enabled = false;
         
-        // Animação de morte
         animator.SetBool("Dying", true);
         animator.SetBool("Walking", false);
         animator.SetBool("Running", false);
@@ -229,12 +204,10 @@ public class BossStateMachine : MonoBehaviour
     {
         BossState newHealthState = GetStateByHealth();
         
-        // Se a saúde mudou significativamente
         if (newHealthState != healthBasedState)
         {
             healthBasedState = newHealthState;
             
-            // Inicia transição com fuga
             StartCoroutine(TransitionWithEscape());
         }
     }
@@ -244,28 +217,24 @@ public class BossStateMachine : MonoBehaviour
         float healthPercentage = currentHealth / maxHealth;
         
         if (healthPercentage >= 0.7f)
-            return BossState.PATROL;  // Comportamento 1
+            return BossState.PATROL; 
         else if (healthPercentage >= 0.3f)
-            return BossState.CHASE;   // Comportamento 2
+            return BossState.CHASE;  
         else
-            return BossState.CHASE;   // Comportamento 3 (com velocidade aumentada)
+            return BossState.CHASE;  
     }
     
     IEnumerator TransitionWithEscape()
     {
         isInTransition = true;
         
-        // Entra em estado de fuga
         ChangeState(BossState.ESCAPE);
         escapeTimer = escapeDuration;
         
-        // Espera a duração da fuga
         yield return new WaitForSeconds(escapeDuration);
         
-        // Sai do estado de transição
         isInTransition = false;
         
-        // Vai para o estado baseado na saúde atual
         ChangeState(healthBasedState);
     }
     
@@ -301,7 +270,7 @@ public class BossStateMachine : MonoBehaviour
             }
         }
         
-        Debug.Log($"Ponto seguro escolhido: {safest.name}, distância do player: {maxDistance}");
+        //Debug.Log($"Ponto seguro escolhido: {safest.name}, distância do player: {maxDistance}");
         return safest;
     }
     
@@ -311,13 +280,10 @@ public class BossStateMachine : MonoBehaviour
         
         Debug.Log($"Boss mudando de {currentState} para {newState} (Vida: {currentHealth}/{maxHealth})");
         
-        // Executa ações ao sair do estado atual
         ExitState(currentState);
         
-        // Atualiza estado
         currentState = newState;
         
-        // Executa ações ao entrar no novo estado
         EnterState(newState);
     }
     
@@ -365,7 +331,6 @@ public class BossStateMachine : MonoBehaviour
                 break;
                 
             case BossState.CHASE:
-                // Para a perseguição
                 break;
         }
     }

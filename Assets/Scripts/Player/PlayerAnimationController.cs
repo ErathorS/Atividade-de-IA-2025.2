@@ -53,22 +53,17 @@ public class PlayerAnimationController : MonoBehaviour
     
     void Update()
     {
-        // Coleta inputs
         GetInput();
         
-        // Verifica chão
         CheckGround();
         
-        // Atualiza animações
         UpdateAnimations();
     }
     
     void FixedUpdate()
     {
-        // Movimentação física
         HandleMovement();
         
-        // Pulo
         if (jumpInput && isGrounded)
         {
             Jump();
@@ -77,7 +72,6 @@ public class PlayerAnimationController : MonoBehaviour
     
     void GetInput()
     {
-        // Movimento WASD
         float x = 0, z = 0;
         
         if (Keyboard.current.wKey.isPressed) z = 1;
@@ -87,10 +81,8 @@ public class PlayerAnimationController : MonoBehaviour
         
         moveInput = new Vector2(x, z).normalized;
         
-        // Correr (Shift)
         runInput = Keyboard.current.leftShiftKey.isPressed;
         
-        // Pulo (Space)
         jumpInput = Keyboard.current.spaceKey.wasPressedThisFrame;
     }
     
@@ -98,11 +90,9 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (controller != null)
         {
-            // Movimentação com CharacterController
             Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
             move = transform.TransformDirection(move);
             
-            // Aplica gravidade
             if (!controller.isGrounded)
             {
                 moveDirection.y -= 9.81f * Time.deltaTime;
@@ -112,14 +102,12 @@ public class PlayerAnimationController : MonoBehaviour
                 moveDirection.y = -0.5f;
             }
             
-            // Velocidade baseada em walk/run
             currentSpeed = runInput ? runSpeed : walkSpeed;
             move *= currentSpeed;
             move.y = moveDirection.y;
             
             controller.Move(move * Time.deltaTime);
             
-            // Rotação na direção do movimento
             if (moveInput.magnitude > 0.1f)
             {
                 Vector3 lookDirection = new Vector3(moveInput.x, 0, moveInput.y);
@@ -129,16 +117,13 @@ public class PlayerAnimationController : MonoBehaviour
         }
         else if (rb != null)
         {
-            // Movimentação com Rigidbody (alternativa)
             Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
             currentSpeed = runInput ? runSpeed : walkSpeed;
             Vector3 targetVelocity = move * currentSpeed;
             
-            // Preserva velocidade Y para pulo/gravidade
             targetVelocity.y = rb.linearVelocity.y;
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, targetVelocity, 10f * Time.deltaTime);
             
-            // Rotação
             if (moveInput.magnitude > 0.1f)
             {
                 Vector3 lookDirection = new Vector3(moveInput.x, 0, moveInput.y);
@@ -160,7 +145,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
         else
         {
-            isGrounded = true; // Fallback
+            isGrounded = true;
         }
     }
     
@@ -168,14 +153,11 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (animator == null) return;
         
-        // Velocidade de movimento (0-1 normalizada)
         float normalizedSpeed = Mathf.Clamp01(currentSpeed / runSpeed * moveInput.magnitude);
         animator.SetFloat(moveSpeedParam, normalizedSpeed);
         
-        // Estado no chão
         animator.SetBool(isGroundedParam, isGrounded);
         
-        // Correndo
         animator.SetBool(isRunningParam, runInput && moveInput.magnitude > 0.1f);
     }
     
@@ -193,9 +175,17 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
     
+    public Vector3 GetMoveDirection()
+    {
+        if (moveInput.magnitude > 0.1f)
+        {
+            return new Vector3(moveInput.x, 0, moveInput.y);
+        }
+        return Vector3.zero;
+    }
+    
     void OnDrawGizmosSelected()
     {
-        // Gizmo para verificação de chão
         if (groundCheck != null)
         {
             Gizmos.color = Color.green;

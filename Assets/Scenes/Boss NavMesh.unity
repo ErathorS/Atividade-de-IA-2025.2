@@ -1707,6 +1707,41 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 427504606}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &501430345
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 501430346}
+  m_Layer: 0
+  m_Name: Patrulha
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &501430346
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501430345}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.17126, y: 1, z: -13.30088}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1851801194}
+  - {fileID: 932583013}
+  - {fileID: 573047987}
+  - {fileID: 2134513751}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &573047986
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,12 +1766,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 573047986}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26.52089, y: 9.283333, z: 51.03991}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -32.69215, y: 8.283333, z: 64.34079}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 501430346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &620177436
 GameObject:
@@ -2814,12 +2849,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 932583012}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.3, y: 5.033333, z: 50}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 30.128738, y: 4.033333, z: 63.30088}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 501430346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963920713
 GameObject:
@@ -4671,12 +4706,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1851801193}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.95, y: 1.0000038, z: -1.8}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.7787399, y: 0, z: 11.50088}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 501430346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1856769124
 GameObject:
@@ -5579,12 +5614,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2134513750}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -24.6, y: 12.28333, z: 55.6}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -30.77126, y: 11.28333, z: 68.90088}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 501430346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9171100155564042
 GameObject:
@@ -6001,6 +6036,9 @@ MonoBehaviour:
   attackDuration: 1
   attackRadius: 10
   attackAngle: 40
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   attackTriggerName: Attacking
 --- !u!114 &919132149560124325
 MonoBehaviour:
@@ -8762,27 +8800,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f66cdc62a385241a90772e17c99656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  attackDamage: 15
-  attackRange: 3.15
+  attackDamage: 25
   attackCooldown: 1
-  attackRadius: 3.15
+  attackWindup: 0.3
+  attackDuration: 0.8
+  attackRange: 5
+  attackAngle: 60
   enemyLayers:
     serializedVersion: 2
     m_Bits: 256
-  attackPoint: {fileID: 1350426051}
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  attackTriggerName: Attack
   showDebugGizmos: 1
-  enableCombo: 0
-  maxComboCount: 3
-  comboResetTime: 2
-  comboDamageMultipliers:
-  - 1
-  - 1.2
-  - 1.5
-  attackTrigger: Attack
-  comboTriggers:
-  - Attack1
-  - Attack2
-  - Attack3
+  attackConeColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &5355455239729601099
 GameObject:
   m_ObjectHideFlags: 0
@@ -11068,16 +11100,13 @@ SceneRoots:
   - {fileID: 15731215}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 2134513751}
+  - {fileID: 646180027}
+  - {fileID: 844127113}
   - {fileID: 1299345280}
   - {fileID: 641908773}
   - {fileID: 709143770}
   - {fileID: 1338066661}
-  - {fileID: 543450653295147288}
-  - {fileID: 1851801194}
-  - {fileID: 932583013}
-  - {fileID: 573047987}
-  - {fileID: 844127113}
-  - {fileID: 646180027}
   - {fileID: 77522443}
+  - {fileID: 543450653295147288}
   - {fileID: 5290347145649084416}
+  - {fileID: 501430346}
