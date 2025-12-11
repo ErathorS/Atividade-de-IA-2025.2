@@ -14,7 +14,7 @@ public class BossCombat : MonoBehaviour
     public float attackAngle = 45f;
     
     [Header("Animation")]
-    public string attackTriggerName = "Attacking"; // Deve ser o MESMO nome do parâmetro no Animator
+    public string attackTriggerName = "Attacking";
     
     private Animator animator;
     private Transform player;
@@ -106,15 +106,26 @@ public class BossCombat : MonoBehaviour
         
         if (distance <= attackRadius && angleToPlayer <= attackAngle * 0.5f)
         {
-            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
+            // Tenta usar o PlayerCombat primeiro
+            PlayerCombat playerCombat = player.GetComponent<PlayerCombat>();
+            if (playerCombat != null)
             {
-                playerHealth.TakeDamage(attackDamage);
-                Debug.Log($"Boss causou {attackDamage} de dano ao player!");
+                playerCombat.TakeDamageFromEnemy(attackDamage, transform);
+                Debug.Log($"Boss causou {attackDamage} de dano ao player via PlayerCombat!");
             }
+            // Fallback para o PlayerHealth direto
             else
             {
-                Debug.LogWarning("Componente PlayerHealth não encontrado no player!");
+                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(attackDamage);
+                    Debug.Log($"Boss causou {attackDamage} de dano ao player via PlayerHealth!");
+                }
+                else
+                {
+                    Debug.LogWarning("Componente PlayerHealth não encontrado no player!");
+                }
             }
         }
         else

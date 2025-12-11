@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -14,6 +16,12 @@ public class PlayerHealth : MonoBehaviour
     public Color lowHealthColor = Color.red;
     public Image healthFillImage;
     
+    [Header("Death Settings")]
+    public float respawnDelay = 5f;
+    
+    private Animator animator;
+    private bool isDead = false;
+    
     void Start()
     {
         currentHealth = maxHealth;
@@ -23,6 +31,8 @@ public class PlayerHealth : MonoBehaviour
         {
             healthFillImage.color = fullHealthColor;
         }
+        
+        animator = GetComponent<Animator>();
     }
     
     void Update()
@@ -36,7 +46,7 @@ public class PlayerHealth : MonoBehaviour
     
     public void TakeDamage(float damage)
     {
-        if (currentHealth <= 0) return;
+        if (currentHealth <= 0 || isDead) return;
         
         float oldHealth = currentHealth;
         currentHealth -= damage;
@@ -68,20 +78,30 @@ public class PlayerHealth : MonoBehaviour
     
     void Die()
     {
+        isDead = true;
         Debug.Log("PLAYER MORREU!");
         
+        // Ativa a animação de morte
+        if (animator != null)
+        {
+            animator.SetBool("IsDead", true);
+        }
+        
+        // Desativa o controlador de animação
         PlayerAnimationController controller = GetComponent<PlayerAnimationController>();
         if (controller != null)
         {
             controller.enabled = false;
         }
         
-        Animator animator = GetComponent<Animator>();
-        if (animator != null)
+        // Desativa o script de combate, se existir
+        PlayerCombat combat = GetComponent<PlayerCombat>();
+        if (combat != null)
         {
-            animator.SetTrigger("Die");
+            combat.enabled = false;
         }
         
+        // Desativa o movimento
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -94,5 +114,26 @@ public class PlayerHealth : MonoBehaviour
         {
             characterController.enabled = false;
         }
+        
+        // Inicia a rotina para resetar a cena após 5 segundos
+        StartCoroutine(ResetSceneAfterDelay(respawnDelay));
+    }
+    
+    IEnumerator ResetSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        // Recarrega a cena atual
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    
+    // Método opcional para curar o jogador
+    public void Heal(float amount)
+    {
+        if (isDead) return;
+        
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthBar();
     }
 }

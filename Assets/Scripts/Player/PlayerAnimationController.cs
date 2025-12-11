@@ -14,16 +14,10 @@ public class PlayerAnimationController : MonoBehaviour
     public float groundDistance = 0.3f;
     public LayerMask groundMask;
     
-    [Header("Attack")]
-    public float attackDamage = 15f;
-    public float attackRange = 2f;
-    public float attackCooldown = 1f;
-    
     [Header("Animation Parameters")]
     public string moveSpeedParam = "MoveSpeed";
     public string isGroundedParam = "IsGrounded";
     public string isRunningParam = "IsRunning";
-    public string attackTriggerParam = "Attack";
     public string jumpTriggerParam = "Jump";
     
     // Componentes
@@ -33,15 +27,12 @@ public class PlayerAnimationController : MonoBehaviour
     private Vector3 moveDirection;
     private bool isGrounded;
     private bool isRunning = false;
-    private bool isAttacking = false;
-    private float lastAttackTime = 0f;
     private float currentSpeed;
     
     // Input
     private Vector2 moveInput;
     private bool jumpInput;
     private bool runInput;
-    private bool attackInput;
     
     void Start()
     {
@@ -70,12 +61,6 @@ public class PlayerAnimationController : MonoBehaviour
         
         // Atualiza animações
         UpdateAnimations();
-        
-        // Ataca se pressionado
-        if (attackInput && CanAttack())
-        {
-            StartAttack();
-        }
     }
     
     void FixedUpdate()
@@ -107,9 +92,6 @@ public class PlayerAnimationController : MonoBehaviour
         
         // Pulo (Space)
         jumpInput = Keyboard.current.spaceKey.wasPressedThisFrame;
-        
-        // Ataque (Botão esquerdo do mouse ou E)
-        attackInput = Mouse.current.leftButton.wasPressedThisFrame;
     }
     
     void HandleMovement()
@@ -195,12 +177,6 @@ public class PlayerAnimationController : MonoBehaviour
         
         // Correndo
         animator.SetBool(isRunningParam, runInput && moveInput.magnitude > 0.1f);
-        
-        // Atacando (controlado pelo trigger)
-        if (isAttacking)
-        {
-            // O trigger já foi ativado, a animação cuida do resto
-        }
     }
     
     void Jump()
@@ -217,66 +193,8 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
     
-    bool CanAttack()
-    {
-        return Time.time >= lastAttackTime + attackCooldown && !isAttacking;
-    }
-    
-    void StartAttack()
-    {
-        isAttacking = true;
-        lastAttackTime = Time.time;
-        animator.SetTrigger(attackTriggerParam);
-        
-        // O dano será aplicado pelo evento na animação
-        Debug.Log("Player atacando!");
-    }
-    
-    // MÉTODO CHAMADO PELO EVENTO NA ANIMAÇÃO DE ATAQUE
-    public void AnimationEvent_ApplyDamage()
-    {
-        ApplyAttackDamage();
-    }
-    
-    void ApplyAttackDamage()
-    {
-        // Detecta inimigos na frente do player
-        RaycastHit[] hits = Physics.SphereCastAll(
-            transform.position + Vector3.up * 0.5f,
-            0.5f,
-            transform.forward,
-            attackRange
-        );
-        
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.collider.CompareTag("Boss"))
-            {
-                BossStateMachine boss = hit.collider.GetComponent<BossStateMachine>();
-                if (boss != null)
-                {
-                    boss.TakeDamage(attackDamage);
-                    Debug.Log($"Player causou {attackDamage} de dano ao Boss!");
-                }
-            }
-        }
-        
-    }
-    
-    // Chamado quando a animação de ataque termina
-    public void AnimationEvent_AttackEnd()
-    {
-        isAttacking = false;
-        animator.ResetTrigger(attackTriggerParam);
-        Debug.Log("Ataque do Player concluído");
-    }
-    
     void OnDrawGizmosSelected()
     {
-        // Gizmo para alcance de ataque
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + Vector3.up * 0.5f + transform.forward * attackRange, 0.5f);
-        
         // Gizmo para verificação de chão
         if (groundCheck != null)
         {

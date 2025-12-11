@@ -407,28 +407,5 @@ public class BossStateMachine : MonoBehaviour
             healthBar.value = currentHealth / maxHealth;
         }
     }
-    
-    // Método para debug visual
-    // void OnGUI()
-    // {
-    //     if (!Application.isPlaying) return;
-        
-    //     GUIStyle style = new GUIStyle();
-    //     style.fontSize = 18;
-    //     style.normal.textColor = Color.white;
-    //     style.padding = new RectOffset(10, 10, 10, 10);
-        
-    //     string debugText = $"=== BOSS STATUS ===\n";
-    //     debugText += $"Estado: {currentState}\n";
-    //     debugText += $"Vida: {currentHealth}/{maxHealth} ({(currentHealth/maxHealth*100):F1}%)\n";
-    //     debugText += $"Estado Base Saúde: {healthBasedState}\n";
-    //     debugText += $"Player Detectado: {detection.IsPlayerDetected()}\n";
-    //     debugText += $"Player no Alcance: {detection.IsPlayerInAttackRange()}\n";
-    //     debugText += $"Pode Atacar: {combat.CanAttack()}\n";
-    //     debugText += $"Em Transição: {isInTransition}\n";
-    //     debugText += $"Tempo Fuga: {escapeTimer:F1}s";
-        
-    //     GUI.Box(new Rect(10, 10, 400, 200), "");
-    //     GUI.Label(new Rect(20, 20, 380, 180), debugText, style);
-    // }
+
 }
