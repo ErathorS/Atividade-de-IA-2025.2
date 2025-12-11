@@ -20,15 +20,18 @@ public class PlayerCombat : MonoBehaviour
     
     [Header("Animation")]
     public string attackTriggerName = "Attack";
+    public string takeDamageTriggerName = "TakeDamage"; // Adicione esta linha
     
     [Header("Debug")]
     public bool showDebugGizmos = true;
     public Color attackConeColor = Color.red;
     
+    // Componentes
     private Animator animator;
     private PlayerHealth playerHealth;
     private PlayerAnimationController movementController;
     
+    // Estado
     private float lastAttackTime = 0f;
     private bool isAttacking = false;
     
@@ -46,6 +49,7 @@ public class PlayerCombat : MonoBehaviour
     
     void Update()
     {
+        // Input de ataque
         if ((Mouse.current.leftButton.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame) 
             && !isAttacking && CanAttack())
         {
@@ -87,6 +91,7 @@ public class PlayerCombat : MonoBehaviour
     
     public void AnimationEvent_ApplyDamage()
     {
+        Debug.Log("Evento de animação do Player: Aplicando dano!");
         ApplyAttackDamage();
     }
     
@@ -118,6 +123,7 @@ public class PlayerCombat : MonoBehaviour
         {
             if (hit.transform != target)
             {
+                Debug.Log($"Obstáculo detectado: {hit.transform.name}");
                 return true;
             }
         }
@@ -174,9 +180,28 @@ public class PlayerCombat : MonoBehaviour
         {
             playerHealth.TakeDamage(damage);
             
-            if (animator != null)
+            // Verifica se o parâmetro existe antes de usar
+            if (animator != null && !string.IsNullOrEmpty(takeDamageTriggerName))
             {
-                animator.SetTrigger("TakeDamage");
+                // Verifica se o parâmetro existe no Animator
+                bool hasParameter = false;
+                foreach (AnimatorControllerParameter param in animator.parameters)
+                {
+                    if (param.name == takeDamageTriggerName)
+                    {
+                        hasParameter = true;
+                        break;
+                    }
+                }
+                
+                if (hasParameter)
+                {
+                    animator.SetTrigger(takeDamageTriggerName);
+                }
+                else
+                {
+                    Debug.LogWarning($"Parâmetro '{takeDamageTriggerName}' não encontrado no Animator do Player!");
+                }
             }
             
             ApplyKnockback(enemy);
@@ -201,6 +226,7 @@ public class PlayerCombat : MonoBehaviour
             animator.ResetTrigger(attackTriggerName);
         }
         
+        Debug.Log("Ataque do Player concluído");
     }
     
     void OnDrawGizmosSelected()

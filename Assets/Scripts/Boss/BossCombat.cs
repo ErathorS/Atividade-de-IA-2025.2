@@ -116,7 +116,7 @@ public class BossCombat : MonoBehaviour
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
         
-        Debug.Log($"Verificando ataque - Distância: {distance}, Alcance: {attackRadius}, Ângulo: {angleToPlayer}");
+        //Debug.Log($"Verificando ataque - Distância: {distance}, Alcance: {attackRadius}, Ângulo: {angleToPlayer}");
         
         if (distance <= attackRadius && angleToPlayer <= attackAngle * 0.5f)
         {

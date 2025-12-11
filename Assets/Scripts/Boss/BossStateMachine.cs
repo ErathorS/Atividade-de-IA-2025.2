@@ -20,9 +20,9 @@ public class BossStateMachine : MonoBehaviour
     
     [Header("State Parameters")]
     public float escapeDuration = 3f;
-    public float behavior1Speed = 3f;  // Vida ≥ 70%
-    public float behavior2Speed = 5f;  // 30% ≤ Vida < 70%
-    public float behavior3Speed = 7f;  // Vida ≤ 30%
+    public float behavior1Speed = 3f;
+    public float behavior2Speed = 5f;
+    public float behavior3Speed = 7f;
     public float escapeSpeed = 8f;
     
     [Header("Escape Settings")]
@@ -217,11 +217,11 @@ public class BossStateMachine : MonoBehaviour
         float healthPercentage = currentHealth / maxHealth;
         
         if (healthPercentage >= 0.7f)
-            return BossState.PATROL; 
+            return BossState.PATROL;
         else if (healthPercentage >= 0.3f)
-            return BossState.CHASE;  
+            return BossState.CHASE;
         else
-            return BossState.CHASE;  
+            return BossState.CHASE;
     }
     
     IEnumerator TransitionWithEscape()
@@ -270,7 +270,7 @@ public class BossStateMachine : MonoBehaviour
             }
         }
         
-        //Debug.Log($"Ponto seguro escolhido: {safest.name}, distância do player: {maxDistance}");
+        Debug.Log($"Ponto seguro escolhido: {safest.name}, distância do player: {maxDistance}");
         return safest;
     }
     
@@ -329,9 +329,6 @@ public class BossStateMachine : MonoBehaviour
             case BossState.ATTACK:
                 navigation.ResumeMovement();
                 break;
-                
-            case BossState.CHASE:
-                break;
         }
     }
     
@@ -372,5 +369,4 @@ public class BossStateMachine : MonoBehaviour
             healthBar.value = currentHealth / maxHealth;
         }
     }
-
 }
